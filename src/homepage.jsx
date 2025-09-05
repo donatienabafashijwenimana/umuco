@@ -4,8 +4,8 @@ import logo from './assets/logo.svg'
 function Homepage() {
   return (
     <div className='w-full h-auto shadow-12'>
-      <div className="w-full bg-green-500 h-25 m-0 flex p-1 flex-row flex p-3 max-h-25 items-center justify-between">
-          <span></span>
+      <div className="w-full bg-green-500 h-25 m-0 flex p-1 flex-row flex p-3 max-h-25 items-center justify-left">
+        
           <img src={logo} className='h-[100px] object-contain self-center m-0 p-0'/>
       </div>
       <div className="w-full flex flex-row bg-blue-300 h-15 justify-between text-[20px] px-10">
