@@ -59,8 +59,16 @@ function Dashboard() {
                 ))}
             </div>
         </div>
-        <p className="w-full text-lg p-3">
-            ibikorwa byacu
+        <p className="w-full text-xl p-5">
+            Murakaza neza ku rubuga UmUco Wacu, urubuga rugamije gusigasira no kumenyekanisha umuco nyarwanda. 
+            Uru rubuga ni nk’isomero ry’ikoranabuhanga ry’Ikinyarwanda rigenewe abana, urubyiruko n’abakuru bose, 
+            rukaba rugamije gufasha abanyeshuri, abarimu, ababyeyi ndetse n’abashakashatsi mu kongera
+            ubumenyi ku rurimi n’umuco nyarwanda. 
+            Aha uzasanga ibisakuzo byatozaga ubwenge, imigani migufi n’imigani miremire y’inyigisho, 
+            ikeshamvugo ryigisha ubuhanga mu magambo ndetse n’amateka y’u Rwanda kuva kera kugeza ubu.
+            Ibi byose bigamije kurinda no guteza imbere indangagaciro z’abanyarwanda zirimo ubupfura, 
+            ubumwe, ubutwari n’ubwenge. Twese hamwe tugomba gukunda umuco wacu,
+            tukawusigasira kandi tukawuteza imbere kuko ari wo soko y’ubumwe, amahoro n’iterambere ry’igihugu
       </p>
     </div>
   );
