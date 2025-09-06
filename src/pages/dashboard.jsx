@@ -20,55 +20,65 @@ function Dashboard() {
   useEffect(() => {
     const interval = setInterval(() => {
       setIndex((prev) => prev + 1);
-    }, 4000); // every 3 sec
+    }, 4000); // every 4 sec
 
     return () => clearInterval(interval);
   }, []);
 
   const handleTransitionEnd = () => {
     if (index >= images.length) {
-      // temporarily remove transition
+      // remove transition
       containerRef.current.style.transition = "none";
       setIndex(0);
+
       // force reflow so transition works next time
-      containerRef.current.offsetHeight; 
+      void containerRef.current.offsetHeight;
       containerRef.current.style.transition = "transform 2s ease-in-out";
     }
   };
 
   return (
-    <div className="w-full flex flex-col max-h-[450px] overflow-auto">
-       <div className="relative w-full h-[500px] min-h-[500px] overflow-hidden bg-gray-100 flex  items-center">
+    <div className="w-full flex flex-col max-h-[450px] overflow-y-auto thin scrollbar-thin-blue-500">
+      {/* Carousel */}
+      <div className="relative w-full h-[500px] min-h-[500px] overflow-hidden bg-gray-100 flex items-center">
+        <div
+          ref={containerRef}
+          className="flex transition-transform duration-[2000ms] ease-in-out w-full"
+          style={{
+            transform: `translateX(-${index * (100 / 3)}%)`,
+            width: `${(extendedImages.length * 100) / 3}%`,
+          }}
+          onTransitionEnd={handleTransitionEnd}
+        >
+          {extendedImages.map((img, i) => (
             <div
-                ref={containerRef}
-                className="flex transition-transform duration-[2000ms] ease-in-out"
-                style={{
-                transform: `translateX(-${index * (100 / 3)}%)`,
-                width: `${(extendedImages.length * 100) / 3}%`,
-                }}
-                onTransitionEnd={handleTransitionEnd}
+              key={i}
+              className="w-full sm:w-1/2 lg:w-1/3 flex-shrink-0 px-2"
             >
-                {extendedImages.map((img, i) => (
-                <div key={i} className="w-1/3 flex-shrink-0 px-2">
-                    <img
-                    src={img}
-                    alt={`slide-${i}`}
-                    className="h-[495px] w-full object-cover rounded-lg shadow-lg"
-                    />
-                </div>
-                ))}
+              <img
+                src={img}
+                alt={`slide-${i}`}
+                className="h-[495px] w-full object-cover rounded-lg shadow-lg"
+              />
             </div>
+          ))}
         </div>
-        <p className="w-full text-xl p-5">
-            Murakaza neza ku rubuga UmUco Wacu, urubuga rugamije gusigasira no kumenyekanisha umuco nyarwanda. 
-            Uru rubuga ni nk’isomero ry’ikoranabuhanga ry’Ikinyarwanda rigenewe abana, urubyiruko n’abakuru bose, 
-            rukaba rugamije gufasha abanyeshuri, abarimu, ababyeyi ndetse n’abashakashatsi mu kongera
-            ubumenyi ku rurimi n’umuco nyarwanda. 
-            Aha uzasanga ibisakuzo byatozaga ubwenge, imigani migufi n’imigani miremire y’inyigisho, 
-            ikeshamvugo ryigisha ubuhanga mu magambo ndetse n’amateka y’u Rwanda kuva kera kugeza ubu.
-            Ibi byose bigamije kurinda no guteza imbere indangagaciro z’abanyarwanda zirimo ubupfura, 
-            ubumwe, ubutwari n’ubwenge. Twese hamwe tugomba gukunda umuco wacu,
-            tukawusigasira kandi tukawuteza imbere kuko ari wo soko y’ubumwe, amahoro n’iterambere ry’igihugu
+      </div>
+
+      {/* Description */}
+      <p className="w-full text-base md:text-lg lg:text-xl p-5 leading-relaxed">
+        Murakaza neza ku rubuga <strong>UmUco Wacu</strong>, urubuga rugamije
+        gusigasira no kumenyekanisha umuco nyarwanda. Uru rubuga ni
+        nk’isomero ry’ikoranabuhanga ry’Ikinyarwanda rigenewe abana, urubyiruko
+        n’abakuru bose, rukaba rugamije gufasha abanyeshuri, abarimu, ababyeyi
+        ndetse n’abashakashatsi mu kongera ubumenyi ku rurimi n’umuco nyarwanda.
+        Aha uzasanga ibisakuzo byatozaga ubwenge, imigani migufi n’imigani
+        miremire y’inyigisho, ikeshamvugo ryigisha ubuhanga mu magambo ndetse
+        n’amateka y’u Rwanda kuva kera kugeza ubu. Ibi byose bigamije kurinda
+        no guteza imbere indangagaciro z’abanyarwanda zirimo ubupfura, ubumwe,
+        ubutwari n’ubwenge. Twese hamwe tugomba gukunda umuco wacu, tukawusigasira
+        kandi tukawuteza imbere kuko ari wo soko y’ubumwe, amahoro n’iterambere
+        ry’igihugu.
       </p>
     </div>
   );
