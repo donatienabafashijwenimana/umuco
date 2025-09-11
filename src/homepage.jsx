@@ -3,6 +3,9 @@ import logo from "./assets/logo.svg";
 import Dashboard from "./pages/dashboard";
 import { swichpage } from "./store/pagestore";
 import Imiganimigufi from "./pages/imigani-migufi";
+import Ibisakuzo from "./pages/ibisakuzo";
+import Ikeshamvugo from "./pages/ikeshamvugo";
+import Imiganimiremire from "./pages/imigani-miremire";
 
 function Homepage() {
   
@@ -42,17 +45,21 @@ function Homepage() {
         <button className={`text-black p-2 hover:bg-white hover:text-blue-500 w-full md:w-auto
         ${page=='imigani migufi' ? 'bg-white':''}`}
         onClick={()=>setpage('imigani migufi')}>
-          Imigani migufi
+          Imigani migufi/imigenurano
         </button>
         <button className={`text-black p-2 hover:bg-white hover:text-blue-500 w-full md:w-auto
         ${page=='ibisakuzo' ? 'bg-white':''}`}
         onClick={()=>setpage('ibisakuzo')}>
           Ibisakuzo
         </button>
-        <button className="text-black p-2 hover:bg-white hover:text-blue-500 w-full md:w-auto">
+        <button className={`text-black p-2 hover:bg-white hover:text-blue-500 w-full md:w-auto
+        ${page=='ikeshamvugo' ? 'bg-white':''}`}
+        onClick={()=>setpage('ikeshamvugo')}>
           Ikeshamvugo
         </button>
-        <button className="text-black p-2 hover:bg-white hover:text-blue-500 w-full md:w-auto">
+        <button className={`text-black p-2 hover:bg-white hover:text-blue-500 w-full md:w-auto
+        ${page=='imiganimiremire' ? 'bg-white':''}`}
+        onClick={()=>setpage('imiganimiremire')}>
           inkuru n'Imigani miremire
         </button>
         <button className="text-black p-2 hover:bg-white hover:text-blue-500 w-full md:w-auto">
@@ -65,6 +72,9 @@ function Homepage() {
       <div className="w-full max-h-400px] overflow-hidden">
         {page==='ahabanza' && <Dashboard/>}
         {page==='imigani migufi' && <Imiganimigufi/>}
+        {page==='ibisakuzo' && <Ibisakuzo/>}
+        {page==='ikeshamvugo' && <Ikeshamvugo/>}
+        {page==='imiganimiremire' && <Imiganimiremire/>}
       </div>
     </div>
   );

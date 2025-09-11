@@ -38,7 +38,7 @@ function Dashboard() {
   };
 
   return (
-    <div className="w-full flex flex-col h-full overflow-y-auto thin scrollbar-thin-blue-500">
+    <div className="w-[98%] shadow-xl flex flex-col h-full overflow-y-auto thin scrollbar-thin-blue-500 m-3">
       {/* Carousel */}
       <div className="relative w-full h-outo min-h-[500px] overflow-hidden bg-gray-100 flex items-center">
         <div
