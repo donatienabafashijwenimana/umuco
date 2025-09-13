@@ -33,7 +33,7 @@ function Ibisakuzo() {
   );
 
   return (
-    <div className="p-3">
+    <div className="p-3 sm:p-1">
       {/* Header Section */}
       <div className="flex flex-col md:flex-row md:justify-between md:items-center mb-6 space-y-3 md:space-y-0">
         <h2 className="text-2xl font-bold text-purple-700 ">🧩 Ibisakuzo</h2>
