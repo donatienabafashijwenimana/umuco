@@ -1,18 +1,18 @@
 import React, { useState } from "react";
 import { Search, BookOpen } from "lucide-react";
 
-function Imiganimiremire() {
-  const imigani_miremire = [
-    "umugani wa ngunda",
-    "bakame n'ipyisi",
-    "maguru ya sarwaya",
-    "petero nzukira",
+function Insigamigani() {
+  const insigamigani = [
+    "ntabyera ngo de",
+    "yaje nk'iyagatera",
+    "habe na mba",
+    "utabusya abwita ubumera",
   ];
 
   const [query, setQuery] = useState("");
 
-  // filter by search
-  const filteredStories = imigani_miremire.filter((item) =>
+  // Filter based on search
+  const filteredProverbs = insigamigani.filter((item) =>
     item.toLowerCase().includes(query.toLowerCase())
   );
 
@@ -21,13 +21,13 @@ function Imiganimiremire() {
       {/* Header */}
       <div className="flex flex-col md:flex-row justify-between items-center bg-blue-50 rounded-xl p-4 shadow mb-6 gap-3">
         <h2 className="text-2xl md:text-3xl font-bold text-blue-700">
-          📖 Inkuru n'Imigani Miremire
+          📚 Insigamigani
         </h2>
         <div className="relative w-full md:w-[350px]">
           <input
             type="text"
-            className="w-full h-11 pl-10 pr-4 bg-white rounded-xl outline-none shadow-md border focus:ring-2 focus:ring-blue-400"
             placeholder="🔍 Shakira hano..."
+            className="w-full h-11 pl-10 pr-4 bg-white rounded-xl outline-none shadow-md border focus:ring-2 focus:ring-blue-400"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
           />
@@ -35,10 +35,10 @@ function Imiganimiremire() {
         </div>
       </div>
 
-      {/* Grid of stories */}
+      {/* Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-        {filteredStories.length > 0 ? (
-          filteredStories.map((item, index) => (
+        {filteredProverbs.length > 0 ? (
+          filteredProverbs.map((item, index) => (
             <div
               key={index}
               className="group w-full p-6 bg-gradient-to-br from-blue-100 to-white rounded-2xl shadow-md flex items-center gap-3 cursor-pointer hover:shadow-2xl hover:scale-105 transition-transform duration-300"
@@ -51,7 +51,7 @@ function Imiganimiremire() {
           ))
         ) : (
           <p className="col-span-full text-center text-gray-500 py-6">
-            Nta nkuru zibonywe 🔍
+            Nta nsigamigani zibonywe 🔍
           </p>
         )}
       </div>
@@ -59,4 +59,4 @@ function Imiganimiremire() {
   );
 }
 
-export default Imiganimiremire;
+export default Insigamigani;
