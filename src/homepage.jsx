@@ -89,7 +89,7 @@ export default function Homepage() {
       </nav>
 
       {/* Main Content */}
-      <main className="flex-1 p-2 md:p-1">
+      <main className="flex-1 p-2 md:p-6">
         <div className="bg-white/80 rounded-2xl max-w-full w-full shadow-xl text-center">
           
           {active === "Ahabanza" && <Ahabanza/>}
