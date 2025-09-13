@@ -89,8 +89,8 @@ export default function Homepage() {
       </nav>
 
       {/* Main Content */}
-      <main className="flex-1 p-8">
-        <div className="bg-white/80 rounded-2xl shadow-xl p-6 text-center">
+      <main className="flex-1 p-2">
+        <div className="bg-white/80 rounded-2xl shadow-xl p-2 text-center">
           
           {active === "Ahabanza" && <Ahabanza/>}
           {active === "imigani-migufi" && <Imiganimigufi/>}
