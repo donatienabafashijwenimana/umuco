@@ -99,7 +99,7 @@ function Ikeshamvugo() {
                   ) : (
                     <tr>
                       <td colSpan={3} className="p-6 text-center text-gray-500">
-                        Nta bishamvugo byabonetse 🔍
+                        Tegereza akanya gato...
                       </td>
                     </tr>
                   )}

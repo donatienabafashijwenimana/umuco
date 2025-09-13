@@ -17,7 +17,7 @@ function Imiganimiremire() {
   );
 
   return (
-    <div className="w-[98%] m-3 p-4 h-auto">
+    <div className="w-[98%] m-1 p-4 h-auto">
       {/* Header */}
       <div className="flex flex-col md:flex-row justify-between items-center bg-blue-50 rounded-xl p-4 shadow mb-6 gap-3">
         <h2 className="text-2xl md:text-3xl font-bold text-blue-700">
@@ -51,7 +51,7 @@ function Imiganimiremire() {
           ))
         ) : (
           <p className="col-span-full text-center text-gray-500 py-6">
-            Nta nkuru zibonywe 🔍
+            Tegereza gato...
           </p>
         )}
       </div>

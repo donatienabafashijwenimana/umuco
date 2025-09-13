@@ -30,7 +30,7 @@ function Imiganimigufi() {
   );
 
   return (
-    <div className="p-6">
+    <div className="p-4">
       {/* Header Section */}
       <div className="flex flex-col md:flex-row md:justify-between md:items-center mb-6 space-y-3 md:space-y-0">
         <h2 className="text-2xl font-bold text-purple-700 flex gap-2">
@@ -72,7 +72,7 @@ function Imiganimigufi() {
             ) : (
               <tr>
                 <td colSpan="2" className="p-6 text-center text-gray-500">
-                  Nta migani yabonetse 🔍
+                  Tegereza gato...
                 </td>
               </tr>
             )}
