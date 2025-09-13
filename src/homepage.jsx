@@ -90,7 +90,7 @@ export default function Homepage() {
 
       {/* Main Content */}
       <main className="flex-1 p-2">
-        <div className="bg-white/80 rounded-2xl shadow-xl p-2 text-center">
+        <div className="bg-white/80 rounded-2xl max-w-full w-full shadow-xl p-2 text-center">
           
           {active === "Ahabanza" && <Ahabanza/>}
           {active === "imigani-migufi" && <Imiganimigufi/>}
