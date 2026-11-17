@@ -1,86 +1,109 @@
-import React, { useEffect, useState } from "react";
-import * as XLSX from "xlsx";
-import { Quote, Search } from "lucide-react";
+import { useEffect, useMemo, useState } from "react";
+import { Quote } from "lucide-react";
+import { PageHeader } from "../components/PageHeader";
+import { EmptyState, ErrorState, LoadingRows } from "../components/States";
+import Highlight from "../components/Highlight";
+import { useSheets } from "../hooks/useSheets";
 
-function Imiganimigufi() {
-  const [data, setData] = useState([]);
+const SHEETS = ["/document/imigani-migufi.xlsx"];
+const PAGE_SIZE = 60;
+
+export default function Imiganimigufi() {
+  const { data, status, error, reload } = useSheets(SHEETS);
   const [query, setQuery] = useState("");
+  const [visible, setVisible] = useState(PAGE_SIZE);
+
+  const proverbs = useMemo(() => {
+    const seen = new Set();
+    return (data[SHEETS[0]] ?? [])
+      .map(([text = ""]) => text.trim())
+      .filter((text) => {
+        const key = text.toLowerCase().replace(/\s+/g, " ");
+        if (!key || seen.has(key)) return false;
+        seen.add(key);
+        return true;
+      })
+      .map((text, index) => ({ text, id: index + 1 }));
+  }, [data]);
+
+  const filtered = useMemo(() => {
+    const term = query.trim().toLowerCase();
+    if (!term) return proverbs;
+    return proverbs.filter((item) => item.text.toLowerCase().includes(term));
+  }, [proverbs, query]);
 
   useEffect(() => {
-    const fetchExcel = async () => {
-      try {
-        const response = await fetch("/document/imigani-migufi.xlsx");
-        const arrayBuffer = await response.arrayBuffer();
-        const workbook = XLSX.read(arrayBuffer, { type: "array" });
-        const sheetName = workbook.SheetNames[0];
-        const sheet = workbook.Sheets[sheetName];
-        const jsonData = XLSX.utils.sheet_to_json(sheet, { header: 1 });
-        const flatArray = jsonData.filter((row) => row.length > 0);
-        setData(flatArray);
-      } catch (error) {
-        console.error("Error reading excel:", error);
-      }
-    };
-    fetchExcel();
-  }, []);
-
-  // 🔍 Filter proverbs based on query
-  const filteredData = data.filter((row) =>
-    row[0]?.toString().toLowerCase().includes(query.toLowerCase())
-  );
+    setVisible(PAGE_SIZE);
+  }, [query]);
 
   return (
-    <div className="p-4">
-      {/* Header Section */}
-      <div className="flex flex-col md:flex-row md:justify-between md:items-center mb-6 space-y-3 md:space-y-0">
-        <h2 className="text-2xl font-bold text-purple-700 flex gap-2">
-           <Quote size={20} /> Imigani Migufi / Imigenurano
-        </h2>
+    <div className="animate-fade-up">
+      <PageHeader
+        icon={Quote}
+        title="Imigani migufi n'imigenurano"
+        description="Amagambo y'ubwenge y'Abanyarwanda: aha ni ho uzasanga imigani migufi n'imigenurano yagiye yambukwa mu ngano."
+        count={status === "ready" ? filtered.length : undefined}
+        countLabel={query ? "yabonetse" : "imigani"}
+        query={query}
+        onQueryChange={setQuery}
+        searchPlaceholder="Shakira umugani..."
+        accent="purple"
+      />
 
-        <div className="relative w-full md:w-[350px]">
-          <input
-            type="text"
-            placeholder="🔍 Shakira hano..."
-            className="w-full h-11 pl-10 pr-4 rounded-xl border border-gray-300 shadow-sm outline-none focus:ring-2 focus:ring-green-400"
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
+      {status === "loading" ? <LoadingRows rows={6} /> : null}
+      {status === "error" ? <ErrorState message={error} onRetry={reload} /> : null}
+
+      {status === "ready" ? (
+        filtered.length === 0 ? (
+          <EmptyState
+            title="Nta mugani wabonetse"
+            hint="Gerageza andika ijambo ryoroshye kurusha iryo."
           />
-          <Search className="absolute left-3 top-3 text-gray-400" size={20} />
-        </div>
-      </div>
-
-      {/* Table */}
-      <div className="overflow-x-auto bg-white/80 backdrop-blur-md rounded-2xl shadow-xl">
-        <table className="min-w-full text-sm text-gray-700">
-          <thead className="bg-green-100 text-purple-800 font-semibold">
-            <tr>
-              <th className="p-3 text-center">#</th>
-              <th className="p-3 text-lg text-left">Umugani mugufi / Umugenurano</th>
-            </tr>
-          </thead>
-          <tbody>
-            {filteredData.length > 0 ? (
-              filteredData.map((row, i) => (
-                <tr
-                  key={i}
-                  className="hover:bg-green-50 transition border-b last:border-none"
+        ) : (
+          <>
+            <ul className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
+              {filtered.slice(0, visible).map((item) => (
+                <li
+                  key={item.id}
+                  className="group card-surface relative overflow-hidden p-4 pl-5 transition hover:border-purple-200 hover:shadow-md"
                 >
-                  <td className="p-3 text-center">{i + 1}</td>
-                  <td className="p-3 text-lg text-left">{row[0]}</td>
-                </tr>
-              ))
-            ) : (
-              <tr>
-                <td colSpan="2" className="p-6 text-center text-gray-500">
-                  Tegereza gato...
-                </td>
-              </tr>
-            )}
-          </tbody>
-        </table>
-      </div>
+                  <span
+                    aria-hidden="true"
+                    className="absolute top-0 left-0 h-full w-1 bg-gradient-to-b from-purple-300 to-emerald-300 opacity-0 transition group-hover:opacity-100"
+                  />
+                  <div className="flex items-start gap-3">
+                    <span
+                      aria-hidden="true"
+                      className="font-serif text-2xl leading-none text-purple-300"
+                    >
+                      “
+                    </span>
+                    <p className="font-serif text-[1.02rem] leading-7 text-slate-700">
+                      <Highlight text={item.text} query={query} />
+                    </p>
+                  </div>
+                </li>
+              ))}
+            </ul>
+
+            {visible < filtered.length ? (
+              <div className="mt-6 flex flex-col items-center gap-2">
+                <button
+                  type="button"
+                  onClick={() => setVisible((value) => value + PAGE_SIZE)}
+                  className="rounded-full bg-purple-700 px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-purple-800"
+                >
+                  Reba imigani indi
+                </button>
+                <p className="text-xs text-slate-400">
+                  Wereka {Math.min(visible, filtered.length)} kuri{" "}
+                  {filtered.length}
+                </p>
+              </div>
+            ) : null}
+          </>
+        )
+      ) : null}
     </div>
   );
 }
-
-export default Imiganimigufi;

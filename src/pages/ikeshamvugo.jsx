@@ -1,116 +1,193 @@
-import React, { useEffect, useState } from "react";
-import * as XLSX from "xlsx";
-import { Search } from "lucide-react";
+import { useEffect, useMemo, useState } from "react";
+import { ArrowRight, Bookmark } from "lucide-react";
+import { PageHeader } from "../components/PageHeader";
+import { EmptyState, ErrorState, LoadingRows } from "../components/States";
+import Highlight from "../components/Highlight";
+import { useSheets } from "../hooks/useSheets";
 
-function Ikeshamvugo() {
-  const [data, setData] = useState({
-    inka: [],
-    ingoma: [],
-    amata: [],
-    isekuru: [],
-  });
+const SECTIONS = [
+  {
+    key: "inka",
+    label: "Inka",
+    title: "Ikeshamvugo ku nka",
+    path: "/document/ikeshamvugo/ikeshamvugo-inka.xlsx",
+  },
+  {
+    key: "ingoma",
+    label: "Ingoma",
+    title: "Ikeshamvugo ku ngoma",
+    path: "/document/ikeshamvugo/ikeshamvugo-ingoma.xlsx",
+  },
+  {
+    key: "amata",
+    label: "Amata n'igisabo",
+    title: "Ikeshamvugo ku mata n'igisabo",
+    path: "/document/ikeshamvugo/ikeshamvugo-amata-igisabo.xlsx",
+  },
+  {
+    key: "isekuru",
+    label: "Isekuru n'ibindi",
+    title: "Ikeshamvugo ku isekuru, icyansi, umuheto, ingobyi n'igisabo",
+    path: "/document/ikeshamvugo/isekuru-icyansi-umuheto-ingobyi-igisabo.xlsx",
+  },
+];
+
+const SHEETS = SECTIONS.map((section) => section.path);
+
+const parseSheet = (rows = []) => {
+  const [firstRow = []] = rows;
+  const hasHeader = /ntibavuga|bavuga/i.test(firstRow.join(" "));
+  return (hasHeader ? rows.slice(1) : rows)
+    .map(([wrong = "", right = ""]) => ({ wrong, right }))
+    .filter((item) => item.wrong || item.right);
+};
+
+export default function Ikeshamvugo() {
+  const { data, status, error, reload } = useSheets(SHEETS);
   const [query, setQuery] = useState("");
+  const [active, setActive] = useState("inka");
 
-  const mainFunction = async (response) => {
-    const arrayBuffer = await response.arrayBuffer();
-    const workbook = XLSX.read(arrayBuffer, { type: "array" });
-    const sheet = workbook.Sheets[workbook.SheetNames[0]];
-    const jsonData = XLSX.utils.sheet_to_json(sheet, { header: 1 });
-    return jsonData.filter((row) => row.length > 0);
-  };
+  const entries = useMemo(
+    () =>
+      SECTIONS.flatMap((section) =>
+        parseSheet(data[section.path]).map((item, index) => ({
+          ...item,
+          key: `${section.key}-${index}`,
+          section: section.label,
+          sectionKey: section.key,
+        }))
+      ),
+    [data]
+  );
+
+  const filtered = useMemo(() => {
+    const term = query.trim().toLowerCase();
+    if (!term) return entries;
+    return entries.filter(
+      (item) =>
+        item.wrong.toLowerCase().includes(term) ||
+        item.right.toLowerCase().includes(term) ||
+        item.section.toLowerCase().includes(term)
+    );
+  }, [entries, query]);
 
   useEffect(() => {
-    const fetchExcel = async () => {
-      const files = [
-        { key: "inka", path: "/document/ikeshamvugo/ikeshamvugo-inka.xlsx" },
-        { key: "ingoma", path: "/document/ikeshamvugo/ikeshamvugo-ingoma.xlsx" },
-        { key: "amata", path: "/document/ikeshamvugo/ikeshamvugo-amata-igisabo.xlsx" },
-        {
-          key: "isekuru",
-          path: "/document/ikeshamvugo/isekuru-icyansi-umuheto-ingobyi-igisabo.xlsx",
-        },
-      ];
+    const current = filtered.filter((item) => item.sectionKey === active);
+    if (!current.length && filtered.length) {
+      setActive(filtered[0].sectionKey);
+    }
+  }, [filtered, active]);
 
-      const newData = {};
-      for (let file of files) {
-        const res = await fetch(file.path);
-        newData[file.key] = await mainFunction(res);
-      }
-      setData(newData);
-    };
-    fetchExcel();
-  }, []);
-
-  const filterRows = (rows) =>
-    rows.filter(
-      (row) =>
-        row[0]?.toString().toLowerCase().includes(query.toLowerCase()) ||
-        row[1]?.toString().toLowerCase().includes(query.toLowerCase())
-    );
-
-  const sections = [
-    { title: "📝 1. Ikeshamvugo kunka", key: "inka" },
-    { title: "📝 2. Ikeshamvugo kungoma", key: "ingoma" },
-    { title: "📝 3. Ikeshamvugo kumata n'igisabo", key: "amata" },
-    { title: "📝 4. Ikeshamvugo ku isekuru, urusyo, icyansi, umuheto, ingobyi n'igisabo", key: "isekuru" },
-  ];
+  const shown = filtered.filter((item) => item.sectionKey === active);
+  const activeSection = SECTIONS.find((section) => section.key === active);
 
   return (
-    <div className="p-6 space-y-8">
-      {/* Header with Search */}
-      <div className="flex flex-col md:flex-row justify-between items-center gap-3 mb-6">
-        <h1 className="text-3xl font-bold text-purple-700">💬 Ikeshamvugo</h1>
-        <div className="relative w-full md:w-80">
-          <input
-            type="text"
-            placeholder="🔍 Shakira hano..."
-            className="w-full h-11 pl-10 pr-4 rounded-xl border border-gray-300 shadow-sm outline-none focus:ring-2 focus:ring-purple-400"
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-          />
-          <Search className="absolute left-3 top-3 text-gray-400" size={20} />
-        </div>
-      </div>
+    <div className="animate-fade-up">
+      <PageHeader
+        icon={Bookmark}
+        title="Ikeshamvugo"
+        description="Mu Kinyarwanda hari uko ibintu bivugwa mu buryo bwahariwe umwuga cyangwa ubwoko bw'ikintu, utabivuga nk'uko bisanzwe."
+        count={status === "ready" ? filtered.length : undefined}
+        countLabel={query ? "byabonetse" : "amagambo"}
+        query={query}
+        onQueryChange={setQuery}
+        searchPlaceholder="Shakira ikeshamvugo..."
+        accent="blue"
+      />
 
-      {/* Sections */}
-      {sections.map((section) => {
-        const rows = filterRows(data[section.key] || []).slice(1); // skip header
-        return (
-          <div key={section.key} className="bg-white/80 backdrop-blur-md rounded-2xl shadow-xl p-4">
-            <h2 className="text-xl md:text-2xl font-semibold text-purple-600 mb-4">{section.title}</h2>
-            <div className="overflow-x-auto">
-              <table className="min-w-full text-sm text-gray-700">
-                <thead className="bg-purple-100 text-purple-800 font-semibold">
-                  <tr>
-                    <th className="p-3 text-center">#</th>
-                    <th className="p-3 text-lg font-medium">Ntibavuga</th>
-                    <th className="p-3 text-lg font-medium">Bavuga</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {rows.length > 0 ? (
-                    rows.map((row, i) => (
-                      <tr key={i} className="hover:bg-purple-50 transition border-b last:border-none">
-                        <td className="p-3 text-center">{i + 1}</td>
-                        <td className="p-3 text-left text-lg">{row[0]}</td>
-                        <td className="p-3 text-left text-purple-700 text-lg">{row[1]}</td>
-                      </tr>
-                    ))
-                  ) : (
-                    <tr>
-                      <td colSpan={3} className="p-6 text-center text-gray-500">
-                        Tegereza akanya gato...
-                      </td>
-                    </tr>
-                  )}
-                </tbody>
-              </table>
-            </div>
+      {status === "loading" ? <LoadingRows rows={5} /> : null}
+      {status === "error" ? <ErrorState message={error} onRetry={reload} /> : null}
+
+      {status === "ready" ? (
+        <>
+          <div
+            role="tablist"
+            aria-label="Ibyiciro by'ikeshamvugo"
+            className="-mx-1 mb-4 flex gap-1.5 overflow-x-auto px-1 pb-2"
+          >
+            {SECTIONS.map((section) => {
+              const count = filtered.filter(
+                (item) => item.sectionKey === section.key
+              ).length;
+              const selected = section.key === active;
+              return (
+                <button
+                  key={section.key}
+                  type="button"
+                  role="tab"
+                  aria-selected={selected}
+                  onClick={() => setActive(section.key)}
+                  className={`shrink-0 rounded-full px-4 py-2 text-sm font-medium whitespace-nowrap transition ${
+                    selected
+                      ? "bg-sky-700 text-white shadow-sm"
+                      : "border border-sky-100 bg-white text-slate-600 hover:bg-sky-50 hover:text-sky-800"
+                  }`}
+                >
+                  {section.label}
+                  <span
+                    className={`ml-1.5 text-xs ${
+                      selected ? "text-sky-100" : "text-slate-400"
+                    }`}
+                  >
+                    {count}
+                  </span>
+                </button>
+              );
+            })}
           </div>
-        );
-      })}
+
+          <section
+            role="tabpanel"
+            aria-label={activeSection?.title}
+            className="card-surface p-4 md:p-6"
+          >
+            <h2 className="mb-1 text-lg font-semibold text-sky-800">
+              {activeSection?.title}
+            </h2>
+            <p className="mb-4 text-sm text-slate-500">
+              Ibumoso ni ibyo utavuga; iburyo ni ibyo uvuga mu buryo
+              bw'ikeshamvugo.
+            </p>
+
+            {shown.length === 0 ? (
+              <EmptyState
+                title="Nta keshamvugo kabonetse"
+                hint="Gerageza irindi jambo cyangwa uhitemo ikindi gice."
+              />
+            ) : (
+              <ol className="divide-y divide-sky-50">
+                {shown.map((item, index) => (
+                  <li
+                    key={item.key}
+                    className="grid items-center gap-1.5 py-3 sm:grid-cols-[2rem_1fr_auto_1fr] sm:gap-3"
+                  >
+                    <span className="text-xs font-semibold text-slate-400">
+                      {index + 1}
+                    </span>
+                    <span className="leading-6 text-slate-700">
+                      <span className="mr-2 text-xs font-semibold tracking-wide text-rose-500 uppercase sm:hidden">
+                        Ntibavuga
+                      </span>
+                      <Highlight text={item.wrong} query={query} />
+                    </span>
+                    <ArrowRight
+                      size={16}
+                      aria-hidden="true"
+                      className="hidden text-slate-300 sm:block"
+                    />
+                    <span className="leading-6 font-medium text-sky-800">
+                      <span className="mr-2 text-xs font-semibold tracking-wide text-sky-500 uppercase sm:hidden">
+                        Bavuga
+                      </span>
+                      <Highlight text={item.right} query={query} />
+                    </span>
+                  </li>
+                ))}
+              </ol>
+            )}
+          </section>
+        </>
+      ) : null}
     </div>
   );
 }
-
-export default Ikeshamvugo;

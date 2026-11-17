@@ -1,62 +1,149 @@
-import React, { useState } from "react";
-import { Search, BookOpen } from "lucide-react";
+import {
+  ArrowRight,
+  BookOpen,
+  Clock,
+  Quote,
+  ScrollText,
+} from "lucide-react";
+import { PageHeader } from "../components/PageHeader";
 
-function Imiganimiremire() {
-  const imigani_miremire = [
-    "umugani wa ngunda",
-    "bakame n'ipyisi",
-    "maguru ya sarwaya",
-    "petero nzukira",
-  ];
+/**
+ * Inkuru ndende ziteganyijwe. Nta nyandiko yuzuye iraboneka muri ububiko, ni
+ * yo mpamvu zigaragarishwa nk'iziteganyijwe aho kuzihimba.
+ */
+const UPCOMING = [
+  "Umugani wa Ngunda",
+  "Bakame n'Impyisi",
+  "Maguru ya Sarwaya",
+  "Petero Nzukira",
+];
 
-  const [query, setQuery] = useState("");
+const AVAILABLE = [
+  {
+    href: "#/insigamigani",
+    icon: BookOpen,
+    title: "Insigamigani",
+    text: "Imigani 100 yuzuye, ishobora gusomwa no gushakishwa ubu.",
+    count: "100",
+  },
+  {
+    href: "#/imigani-migufi",
+    icon: Quote,
+    title: "Imigani migufi",
+    text: "Imigani migufi n'imigenurano y'Abanyarwanda.",
+    count: "1,134",
+  },
+];
 
-  // filter by search
-  const filteredStories = imigani_miremire.filter((item) =>
-    item.toLowerCase().includes(query.toLowerCase())
-  );
-
+export default function ImiganiMiremire() {
   return (
-    <div className="w-[98%] m-1 p-4 h-auto">
-      {/* Header */}
-      <div className="flex flex-col md:flex-row justify-between items-center bg-blue-50 rounded-xl p-4 shadow mb-6 gap-3">
-        <h2 className="text-2xl md:text-3xl font-bold text-blue-700">
-          📖 Inkuru n'Imigani Miremire
-        </h2>
-        <div className="relative w-full md:w-[350px]">
-          <input
-            type="text"
-            className="w-full h-11 pl-10 pr-4 bg-white rounded-xl outline-none shadow-md border focus:ring-2 focus:ring-blue-400"
-            placeholder="🔍 Shakira hano..."
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-          />
-          <Search className="absolute left-3 top-3 text-gray-400" size={20} />
-        </div>
+    <div className="animate-fade-up">
+      <PageHeader
+        icon={ScrollText}
+        title="Inkuru n'imigani miremire"
+        description="Imigani miremire isaba umwanya muremure wo kuyisoma: ibyo ni inkuru zirambuye, zikubiyemo abantu, imvugo n'inyigisho bitandukanye n'imigani migufi."
+        count={UPCOMING.length}
+        countLabel="inkuru ziteganyijwe"
+      />
+
+      <div className="mb-6 flex items-start gap-3 rounded-2xl border border-amber-200 bg-amber-50/80 p-4 text-sm leading-6 text-amber-900">
+        <Clock size={18} aria-hidden="true" className="mt-0.5 shrink-0" />
+        <p>
+          Inkuru ziri ku rutonde ariko inyandiko yazo yuzuye ntirasomwa ku
+          rubuga. Kugeza igihe zizaba ziteguye, ushobora gusoma{" "}
+          <a
+            href="#/insigamigani"
+            className="font-semibold underline underline-offset-2"
+          >
+            insigamigani 100
+          </a>{" "}
+          zuzuye.
+        </p>
       </div>
 
-      {/* Grid of stories */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-        {filteredStories.length > 0 ? (
-          filteredStories.map((item, index) => (
-            <div
-              key={index}
-              className="group w-full p-6 bg-gradient-to-br from-blue-100 to-white rounded-2xl shadow-md flex items-center gap-3 cursor-pointer hover:shadow-2xl hover:scale-105 transition-transform duration-300"
-            >
-              <BookOpen className="text-blue-500 group-hover:text-blue-700" size={28} />
-              <h2 className="text-xl font-medium capitalize group-hover:text-blue-600">
-                {item}
-              </h2>
-            </div>
-          ))
-        ) : (
-          <p className="col-span-full text-center text-gray-500 py-6">
-            Tegereza gato...
+      <section aria-labelledby="ibyahari" className="mb-8">
+        <h2
+          id="ibyahari"
+          className="mb-3 text-xs font-semibold tracking-[0.18em] text-slate-400 uppercase"
+        >
+          Ibyahari ubu
+        </h2>
+        <ul className="grid gap-4 sm:grid-cols-2">
+          {AVAILABLE.map((item) => {
+            const Icon = item.icon;
+            return (
+              <li key={item.title}>
+                <a
+                  href={item.href}
+                  className="group card-surface flex h-full items-start gap-4 p-5 transition hover:-translate-y-0.5 hover:border-purple-200 hover:shadow-md"
+                >
+                  <span className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-purple-100 bg-purple-50 text-purple-700">
+                    <Icon size={22} aria-hidden="true" />
+                  </span>
+                  <span className="flex flex-col gap-1">
+                    <span className="flex items-baseline gap-2">
+                      <span className="font-semibold text-slate-800 group-hover:text-purple-800">
+                        {item.title}
+                      </span>
+                      <span className="text-xs font-semibold text-slate-400">
+                        {item.count}
+                      </span>
+                    </span>
+                    <span className="text-sm leading-6 text-slate-500">
+                      {item.text}
+                    </span>
+                    <span className="mt-1 inline-flex items-center gap-1 text-sm font-semibold text-purple-700">
+                      Soma
+                      <ArrowRight
+                        size={14}
+                        aria-hidden="true"
+                        className="transition group-hover:translate-x-0.5"
+                      />
+                    </span>
+                  </span>
+                </a>
+              </li>
+            );
+          })}
+        </ul>
+      </section>
+
+      <section aria-labelledby="ziteganyijwe">
+        <div className="mb-3 flex flex-wrap items-baseline justify-between gap-2">
+          <h2
+            id="ziteganyijwe"
+            className="text-xs font-semibold tracking-[0.18em] text-slate-400 uppercase"
+          >
+            Inkuru ziteganyijwe
+          </h2>
+          <p className="text-xs text-slate-400">
+            {UPCOMING.length} ziteganyijwe · 0 zarangiye
           </p>
-        )}
-      </div>
+        </div>
+        <ul className="grid gap-4 sm:grid-cols-2">
+          {UPCOMING.map((title, index) => (
+            <li
+              key={title}
+              className="card-surface flex flex-col gap-3 border-dashed p-5"
+            >
+              <div className="flex items-start justify-between gap-3">
+                <span className="inline-flex h-10 w-10 items-center justify-center rounded-xl bg-rose-50 font-serif text-base font-bold text-rose-600">
+                  {index + 1}
+                </span>
+                <span className="rounded-full bg-slate-100 px-2.5 py-1 text-xs font-semibold text-slate-500">
+                  Bireze
+                </span>
+              </div>
+              <h3 className="font-serif text-lg leading-snug font-semibold text-slate-700">
+                {title}
+              </h3>
+              <p className="text-sm leading-6 text-slate-400">
+                Iyi nkuru izasomwa hano igihe inyandiko yayo yuzuye.
+              </p>
+            </li>
+          ))}
+        </ul>
+      </section>
     </div>
   );
 }
-
-export default Imiganimiremire;
